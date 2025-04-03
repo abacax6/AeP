@@ -1,10 +1,7 @@
 package br.ufape.edu.usuarios;
-
-public class Administrador {
 import br.ufape.edu.solicitacao.Solicitacao;
 import java.util.ArrayList;
 
-    
 public class Administrador extends Usuario {
 
     // Construtor do Administrador, chamando o construtor da classe pai (Usuario)
