@@ -20,7 +20,7 @@ public class Repositorio implements IRepositorio {
 	}
 
 	@Override
-	public Usuario bucaUsuarioPorEmail(String email) {
+	public Usuario buscarUsuarioPorEmail(String email) {
 		for (Usuario u : usuarios) {
 			if (u.getContato().equals(email)) { 
 				return u;

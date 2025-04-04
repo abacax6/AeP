@@ -9,7 +9,7 @@ import br.ufape.edu.usuarios.Usuario;
 public interface IRepositorio {
 
 	void cadastrarUsuario(Usuario usuario);
-	Usuario bucaUsuarioPorEmail(String email);
+	Usuario buscarUsuarioPorEmail(String email);
 	ArrayList<Usuario> listarUsuarios();
 
 	void cadastrarItem(Item item);
