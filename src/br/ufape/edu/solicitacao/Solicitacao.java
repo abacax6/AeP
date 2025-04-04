@@ -16,6 +16,7 @@ public class Solicitacao {
 		setTipo(tipo);
 		setItem(item);
 		setSolicitante(usuario);
+		this.status = "Pendente";
 	}
 
 	// GETTERS E SETTERS

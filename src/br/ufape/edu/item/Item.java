@@ -3,16 +3,16 @@ package br.ufape.edu.item;
 public class Item{
 
 	private String nome;
-	private String discricao;
+	private String descricao;
 	private String contato; 
 	private String img;
 	private int id;
 	
 	
-	public Item(String nome, String discricao, String contato, String img, int id) {
+	public Item(String nome, String descricao, String contato, String img, int id) {
 		
 		this.nome = nome;
-		this.discricao = discricao;
+		this.descricao = descricao;
 		this.contato = contato;
 		this.img = img;
 		this.id = id;
@@ -26,12 +26,12 @@ public class Item{
 		this.nome = nome;
 	}
 
-	public String getDiscricao() {
-		return discricao;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setDiscricao(String discricao) {
-		this.discricao = discricao;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	public String getContato() {
@@ -53,8 +53,16 @@ public class Item{
 	
 	@Override
     public String toString() {
-        return id + ";" + nome + ";" + discricao + ";" + contato + ";" + img;
+        return id + ";" + nome + ";" + descricao + ";" + contato + ";" + img;
     }
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	
 
