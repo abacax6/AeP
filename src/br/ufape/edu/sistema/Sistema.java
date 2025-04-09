@@ -242,30 +242,62 @@ public class Sistema {
 
 	/* PAINEL USUARIO */
 	public void exibirPainelUsuario(Usuario usuario) {
-		int opcao;
-		do {
-			System.out.println("\n===== Painel do Usuário: " + usuario.getUsername() + " =====");
-			System.out.println("1. Solicitar Cadastro de item");
-			System.out.println("2. Ver Minhas Solicitações");
-			System.out.println("0. Sair do painel");
-			System.out.print("Escolha uma opção: ");
-			opcao = sc.nextInt();
-			sc.nextLine(); // limpar buffer
+	    int opcao;
+	    do {
+	        System.out.println("\n===== Painel do Usuário: " + usuario.getUsername() + " =====");
+	        System.out.println("1. Solicitar Cadastro de item");
+	        System.out.println("2. Ver Minhas Solicitações");
+	        System.out.println("3. Solicitar Resgate de Item");
+	        System.out.println("0. Sair do painel");
+	        System.out.print("Escolha uma opção: ");
+	        opcao = sc.nextInt();
+	        sc.nextLine(); // limpar buffer
 
-			switch (opcao) {
-			case 1:
-				solicitarCadastroItem(usuario);
-				break;
-			case 2:
-				visualizarSolicitacoesDoUsuario(usuario);
-				break;
-			case 0:
-				System.out.println("Saindo do painel do usuário...");
-				break;
-			default:
-				System.out.println("Opção inválida.");
-			}
-		} while (opcao != 0);
+	        switch (opcao) {
+	            case 1:
+	                solicitarCadastroItem(usuario);
+	                break;
+	            case 2:
+	                visualizarSolicitacoesDoUsuario(usuario);
+	                break;
+	            case 3:
+	                solicitarResgateDeItem(usuario);
+	                break;
+	            case 0:
+	                System.out.println("Saindo do painel do usuário...");
+	                break;
+	            default:
+	                System.out.println("Opção inválida.");
+	        }
+	    } while (opcao != 0);
+	}
+	
+	public void solicitarResgateDeItem(Usuario usuario) {
+		ArrayList<Item> itens = repositorio.listarItensAnunciados();
+
+	    if (itens.isEmpty()) {
+	        System.out.println("Nenhum item disponível para resgate.");
+	        return;
+	    }
+
+	    System.out.println("\nItens Disponíveis para Resgate");
+	    for (Item item : itens) {
+	        System.out.println("ID: " + item.getId() + " | Nome: " + item.getNome() + " | Descrição: " + item.getDescricao());
+	    }
+
+	    System.out.print("\nDigite o ID do item que deseja solicitar o resgate: ");
+	    int itemId = sc.nextInt();
+	    sc.nextLine(); // limpar buffer
+
+	    Item itemSelecionado = repositorio.buscarItemPorId(itemId);
+
+	    if (itemSelecionado != null) {
+	        Solicitacao solicitacao = new Solicitacao("resgate", itemSelecionado, usuario);
+	        repositorio.cadastrarSolicitacao(solicitacao); // aqui o ID será atribuído automaticamente
+	        System.out.println("Solicitação enviada com sucesso. Aguarde a aprovação do administrador.");
+	    } else {
+	        System.out.println("Item com o ID informado não foi encontrado.");
+	    }
 	}
 
 	public void visualizarSolicitacoesDoUsuario(Usuario usuario) {
