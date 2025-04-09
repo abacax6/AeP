@@ -287,7 +287,7 @@ public class Sistema {
 
 	    System.out.println("\nItens Disponíveis para Resgate");
 	    for (Item item : itens) {
-	        System.out.println("ID: " + item.getId() + " | Nome: " + item.getNome() + " | Descrição: " + item.getDescricao());
+	        System.out.println("ID: " + item.getId() + " | Nome: " + item.getNome() + " | Descrição: + " item.getDescricao()" | Imagem: " + item.getImg());
 	    }
 		
 	    System.out.print("\nDigite o ID do item que deseja solicitar o resgate: ");
