@@ -20,26 +20,36 @@ public class Administrador extends Usuario {
 
 	// Método para visualizar uma solicitação específica
 	public void visualizarSolicitacao(Solicitacao s) {
+		System.out.println("\n=== Você está visualizando a solicitação " + s.getId() + " ===");
 		System.out.println("\nID: " + s.getId());
 		System.out.println("Tipo: " + s.getTipo());
+		System.out.println("Status: " + s.getStatus());
 		System.out.println("Solicitante: " + s.getSolicitante().getUsername());
 		System.out.println("Item: " + s.getItem().getNome());
 		System.out.println("ItemID: " + s.getItem().getId());
 		System.out.println("Descrição: " + s.getItem().getDescricao());
-		System.out.print("\n=== Aprovar (A) ou Rejeitar (R)? ===");
-		sc.nextLine();
-		String resposta = sc.nextLine();
-		  if (resposta.equalsIgnoreCase("A")) {
-              aprovarSolicitacao(s);      
-              System.out.println("Solicitação aprovada.");
-          } else {
-        	  descartarSolicitacao(s);
-        	  System.out.println("Solicitação rejeitada.");
-          }
+		
+		if(s.getStatus().equals("Pendente")) {		
+			System.out.print("=== Aprovar (A), Rejeitar (R) ou Voltar (V)? === \n");
+			String resposta = sc.nextLine();
+			  if (resposta.equalsIgnoreCase("A")) {
+	              aprovarSolicitacao(s);      
+	          } else if (resposta.equalsIgnoreCase("R")){
+	        	  descartarSolicitacao(s);       	  
+	          }	else if (resposta.equalsIgnoreCase("V")) {
+	        	  return;
+	          }
+		} else if((s.getStatus().equals("Aprovada") || s.getStatus().equals("Descartada"))) {
+				System.out.print("=== Voltar (V)? === \n");
+				String resposta = sc.nextLine();
+				if (resposta.equalsIgnoreCase("V")) {
+					return;
+				}
+		}
 	}
 
 	// Método para visualizar solicitações pendentes
-	public void visualizarSolicitacoesPendentes() {
+	public void verListaSolicitacoesPendentes() {
 		System.out.println("\n=== Solicitações Pendentes ===");
 		ArrayList<Solicitacao> pendentes = repositorio.listarSolicitacoesPendentes();
 
@@ -51,6 +61,7 @@ public class Administrador extends Usuario {
 		for (Solicitacao s : pendentes) {
 			System.out.println("\nID: " + s.getId());
 			System.out.println("Tipo: " + s.getTipo());
+			System.out.println("Status: " + s.getStatus());
 			System.out.println("Solicitante: " + s.getSolicitante().getUsername());
 			System.out.println("Item: " + s.getItem().getNome());
 			System.out.println("ItemID: " + s.getItem().getId());
@@ -60,13 +71,72 @@ public class Administrador extends Usuario {
 		}
 		System.out.println("Digite o ID da solicitação que deseja visualizar: ");
 		int resposta = sc.nextInt();
+		sc.nextLine(); // Limpeza do \n (buffer)
 
 		if (resposta == repositorio.buscarSolicitacaoPorId(resposta).getId()) {
 			visualizarSolicitacao(repositorio.buscarSolicitacaoPorId(resposta));
+			
 		} else {
 			// Exception? (Id inválido, Solicitacao inexistente, etc?)
 
 		}
+	}
+	
+	// Método para visualizar solicitações aprovadas
+	public void verListaSolicitacoesAprovadas() {
+		System.out.println("\n=== Solicitações Aprovadas ===");
+		ArrayList<Solicitacao> aprovadas = repositorio.listarSolicitacoesAprovadas();
+
+		if (aprovadas.isEmpty()) {
+			System.out.println("Nenhuma solicitação aprovada até o momento.");
+			return;
+		}
+
+		for (Solicitacao s : aprovadas) {
+			System.out.println("\nID: " + s.getId());
+			System.out.println("Tipo: " + s.getTipo());
+			System.out.println("Status: " + s.getStatus());
+			System.out.println("Solicitante: " + s.getSolicitante().getUsername());
+			System.out.println("Item: " + s.getItem().getNome());
+			System.out.println("ItemID: " + s.getItem().getId());
+			System.out.println("Descrição: " + s.getItem().getDescricao());
+			System.out.print("=== ================== ===\n");
+			
+		}
+		System.out.print("=== Voltar (V)? === \n");
+		String resposta = sc.nextLine();
+		if (resposta.equalsIgnoreCase("V")) {
+			return;
+		}
+		
+	}
+	
+	// Método para visualizar solicitações reprovadas
+	public void verListaSolicitacoesRejeitadas() {
+		System.out.println("\n=== Solicitações Rejeitadas ===");
+		ArrayList<Solicitacao> reprovadas = repositorio.listarSolicitacoesRejeitadas();
+
+		if (reprovadas.isEmpty()) {
+			System.out.println("Nenhuma solicitação descartada até o momento.");
+			return;
+		}
+
+		for (Solicitacao s : reprovadas) {
+			System.out.println("\nID: " + s.getId());
+			System.out.println("Tipo: " + s.getTipo());
+			System.out.println("Solicitante: " + s.getSolicitante().getUsername());
+			System.out.println("Item: " + s.getItem().getNome());
+			System.out.println("ItemID: " + s.getItem().getId());
+			System.out.println("Descrição: " + s.getItem().getDescricao());
+			System.out.print("=== ================== ===\n");
+			
+		}
+		System.out.print("=== Voltar (V)? === \n");
+		String resposta = sc.nextLine();
+		if (resposta.equalsIgnoreCase("V")) {
+			return;
+		}
+		
 	}
 
 	// Método para aprovar uma solicitação (INCORPORA TANTO APROVAR CADASTRO COMO RESGATE, COM BASE NO TIPO)
@@ -90,8 +160,8 @@ public class Administrador extends Usuario {
 			solicitacao.setStatus("Aprovada");
 			solicitacao.getItem().setStatus("Anunciado"); // STATUS DO ITEM, AO SER APROVADO = "ANUNCIADO"
 			repositorio.cadastrarItem(solicitacao.getItem());
-			System.out.println(
-					"Solicitação de cadastro do item de id" + solicitacao.getItem().getId() + " aprovada com sucesso.");
+			System.out.println("\nSolicitação de cadastro do item de id " + solicitacao.getItem().getId() + " aprovada com sucesso.");
+			return;
 		} else {
 			// Se não deu certo, alguma Exception ()
 			return;
@@ -107,8 +177,7 @@ public class Administrador extends Usuario {
 			solicitacao.setStatus("Aprovada");
 			solicitacao.getItem().setStatus("Resgatado");
 			repositorio.moverParaResgatados(solicitacao.getItem());
-			System.out.println(
-					"Solicitação de resgate do item de id" + solicitacao.getItem().getId() + " aprovada com sucesso.");
+			System.out.println("\nSolicitação de resgate do item de id " + solicitacao.getItem().getId() + " aprovada com sucesso.");
 		} else {
 			// Se não deu certo, alguma Exception (Item não existe, Item já foi resgatado,
 			// etc)

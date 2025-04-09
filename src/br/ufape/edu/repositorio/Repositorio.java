@@ -28,7 +28,7 @@ public class Repositorio implements IRepositorio {
 	        }
 	    }
 	    
-	    usuario.setId(++UltimoIdItem);
+	    usuario.setId(++UltimoIdUsuario);
 	    usuarios.add(usuario);
 	    System.out.println("Usuário cadastrado com sucesso!");
 	}
@@ -61,7 +61,7 @@ public class Repositorio implements IRepositorio {
 	// ITENS
 	@Override
 	public void cadastrarItem(Item item) {
-		item.setId(++UltimoIdItem);
+		// item.setId(++UltimoIdItem);  // O ID DO ITEM SERÁ ATRIBUIDO NO MOMENTO EM QUE A SOLICITAÇÃO É FEITA
 		itensAnunciados.add(item);
 	}
 
@@ -94,7 +94,12 @@ public class Repositorio implements IRepositorio {
 	// SOLICITAÇÕES
 	@Override
 	public void cadastrarSolicitacao(Solicitacao solicitacao) { // Adicionar solicitacao
-		solicitacao.setId(++UltimoIdSolicitacao);
+		if(solicitacao.getTipo().equals("Cadastro")) {
+			solicitacao.getItem().setId(++UltimoIdItem); // O item tem seu ID atribuído na solicitação de cadastro
+			solicitacao.getItem().setStatus("Aguardando");
+		}
+		solicitacao.setId(++UltimoIdSolicitacao); // A solicitação pode ter diferentes IDs, ainda que tenha um item de mesmo id que outra,
+		//	Exemplo: duas pessoas solicitaram o resgate de um mesmo item.
 		solicitacoes.add(solicitacao);
 	}
 
@@ -107,6 +112,28 @@ public class Repositorio implements IRepositorio {
 			}
 		}
 		return pendentes; // Retorna a lista das solicitacoes pendentes
+	}
+	
+	@Override
+	public ArrayList<Solicitacao> listarSolicitacoesAprovadas() { // Retorna um ArrayList, lista das solicitacoes aprovadas
+		ArrayList<Solicitacao> aprovadas = new ArrayList<>();
+		for (Solicitacao s : solicitacoes) {
+			if ("Aprovada".equalsIgnoreCase(s.getStatus())) {// Se o Status da solicitacao for "Aprovada"
+				aprovadas.add(s); // Adiciona a solicitacao à lista
+			}
+		}
+		return aprovadas; // Retorna a lista das solicitacoes aprovadas
+	}
+	
+	@Override
+	public ArrayList<Solicitacao> listarSolicitacoesRejeitadas() { // Retorna um ArrayList, lista das solicitacoes rejeitadas
+		ArrayList<Solicitacao> rejeitadas = new ArrayList<>();
+		for (Solicitacao s : solicitacoes) {
+			if ("Descartada".equalsIgnoreCase(s.getStatus())) {// Se o Status da solicitacao for "Rejeitada"
+				rejeitadas.add(s); // Adiciona a solicitacao à lista
+			}
+		}
+		return rejeitadas; // Retorna a lista das solicitacoes rejeitadas
 	}
 
 	@Override

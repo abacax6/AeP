@@ -6,8 +6,7 @@ public class Item {
 	private String descricao;
 	private String contato;
 	private String img;
-	private String status; // "Anunciado" "Resgatado" "Aguardando" "null"-> quando a solicitacao foi descartada 
-							// DIFERENTE DE STATUS DA SOLICITACAO -> "Pendente" "Descartada" "Aprovada"
+	private String status; // "Anunciado" "Resgatado" "Aguardando" "null"-> quando a solicitacao foi descartada 					// DIFERENTE DE STATUS DA SOLICITACAO -> "Pendente" "Descartada" "Aprovada"
 	private int id;
 
 	
