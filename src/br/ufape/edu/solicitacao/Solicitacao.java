@@ -9,7 +9,8 @@ public class Solicitacao {
 	private Item item; // item relacionado a solicitação
 	private String status; // status da solicitação
 	private Usuario solicitante; // usuario criou a solicitação
-	
+	private String imagemComprovante; //imagem para solicitação de resgate
+	private String descricaoResgate; // 
 	// CONSTRUTOR
 	public Solicitacao(String tipo, Item item, Usuario usuario) {	
 		setTipo(tipo);
@@ -57,6 +58,20 @@ public class Solicitacao {
 
 	public void setSolicitante(Usuario solicitante) {
 		this.solicitante = solicitante;
+	}
+	public String getImagemComprovante() {
+		return imagemComprovante;
+	}
+
+	public void setImagemComprovante(String imagemComprovante) {
+		this.imagemComprovante = imagemComprovante;
+	}
+	public String getDescricaoResgate() {
+		return descricaoResgate;
+	}
+
+	public void setDescricaoResgate(String descricaoResgate) {
+		this.descricaoResgate = descricaoResgate;
 	}
 	
 }
