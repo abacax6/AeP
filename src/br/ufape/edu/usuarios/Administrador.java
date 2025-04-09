@@ -6,10 +6,27 @@ import java.util.Scanner;
 
 import br.ufape.edu.repositorio.Repositorio;
 
+/**
+ * Representa o administrador do sistema Achados e Perdidos com permissões especiais.
+ * Responsável por gerenciar solicitações de cadastro e resgate de itens.
+ * 
+ * @author Michael Raul
+ */
+
 public class Administrador extends Usuario {
 	private Repositorio repositorio; // Repositorio, será o mesmo do Sistema
 	Scanner sc = new Scanner(System.in); // SCANNER ESTÁ GLOBAL NA CLASSE (creio que em Sistema tbm esteja)
 
+	
+	 /**
+     * Constrói um administrador com acesso ao repositório do sistema.
+     * @param id Identificador único
+     * @param username Nome de usuário
+     * @param senha Senha de acesso
+     * @param email Email institucional
+     * @param telefone Contato telefônico
+     * @param repositorio Referência ao repositório do sistema
+     */
 	// Construtor do Administrador, chamando o construtor da classe pai (Usuario)
 	public Administrador(int id, String username, String senha, String email, String telefone,
 			Repositorio repositorio) {
@@ -18,6 +35,10 @@ public class Administrador extends Usuario {
 		this.repositorio = repositorio;
 	}
 
+	 /**
+     * Exibe detalhes completos de uma solicitação e opções de aprovação/rejeição.
+     * @param s Solicitação a ser visualizada
+     */
 	// Método para visualizar uma solicitação específica
 	public void visualizarSolicitacao(Solicitacao s) {
 		System.out.println("\n=== Você está visualizando a solicitação " + s.getId() + " ===");
@@ -48,6 +69,9 @@ public class Administrador extends Usuario {
 		}
 	}
 
+	 /**
+     * Lista todas as solicitações pendentes e permite selecionar uma para ação.
+     */
 	// Método para visualizar solicitações pendentes
 	public void verListaSolicitacoesPendentes() {
 		System.out.println("\n=== Solicitações Pendentes ===");
@@ -82,6 +106,9 @@ public class Administrador extends Usuario {
 		}
 	}
 	
+	/**
+     * Lista solicitações aprovadas com informações resumidas.
+     */
 	// Método para visualizar solicitações aprovadas
 	public void verListaSolicitacoesAprovadas() {
 		System.out.println("\n=== Solicitações Aprovadas ===");
@@ -111,6 +138,9 @@ public class Administrador extends Usuario {
 		
 	}
 	
+	/**
+     * Lista solicitações rejeitadas com informações resumidas.
+     */
 	// Método para visualizar solicitações reprovadas
 	public void verListaSolicitacoesRejeitadas() {
 		System.out.println("\n=== Solicitações Rejeitadas ===");
@@ -139,6 +169,10 @@ public class Administrador extends Usuario {
 		
 	}
 
+	 /**
+     * Aprova uma solicitação baseada em seu tipo (Cadastro/Resgate).
+     * @param solicitacao Solicitação a ser aprovada
+     */
 	// Método para aprovar uma solicitação (INCORPORA TANTO APROVAR CADASTRO COMO RESGATE, COM BASE NO TIPO)
 	void aprovarSolicitacao(Solicitacao solicitacao) {
 		// Identificar qual o tipo da solicitação
@@ -151,6 +185,10 @@ public class Administrador extends Usuario {
 
 	}
 
+	 /**
+     * Aprova especificamente solicitações de cadastro de itens.
+     * @param solicitacao Solicitação do tipo "Cadastro"
+     */
 	// Método para aprovar uma solicitação de cadastro
 	public void aprovarSolicitacaoCadastro(Solicitacao solicitacao) {
 		// Se a solicitação tiver o status "Pendente" e o item tiver o status
@@ -168,6 +206,10 @@ public class Administrador extends Usuario {
 		}
 	}
 
+	/**
+     * Aprova especificamente solicitações de resgate de itens.
+     * @param solicitacao Solicitação do tipo "Resgate"
+     */
 	// Método para aprovar uma solicitação de resgate
 	public void aprovarSolicitacaoResgate(Solicitacao solicitacao) {
 		// Se a solicitação tiver o status "Pendente" e o item tiver o status
@@ -185,6 +227,10 @@ public class Administrador extends Usuario {
 		}
 	}
 
+	/**
+     * Rejeita uma solicitação pendente, marcando-a como descartada.
+     * @param solicitacao Solicitação a ser rejeitada
+     */
 	// Método para rejeitar uma solicitação
 	public void descartarSolicitacao(Solicitacao solicitacao) {
 		if (solicitacao.getStatus().equalsIgnoreCase("Pendente")) {

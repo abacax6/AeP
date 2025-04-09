@@ -1,5 +1,10 @@
 package br.ufape.edu.item;
 
+/**
+ * Classe que representa um Item a ser anunciado ou resgatado no sistema.
+ * @author Paulo Vinicius
+ */
+
 public class Item {
 
 	private String nome;

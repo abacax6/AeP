@@ -6,6 +6,13 @@ import br.ufape.edu.item.Item;
 import br.ufape.edu.solicitacao.Solicitacao;
 import br.ufape.edu.usuarios.Usuario;
 
+/**
+ * Interface que define o contrato para operações de persistência do sistema Achados e Perdidos.
+ * Especifica os métodos obrigatórios para manipulação de usuários, itens e solicitações.
+ * 
+ * @author Paulo Vinicius
+ */
+
 public interface IRepositorio {
 
 	void cadastrarUsuario(Usuario usuario);

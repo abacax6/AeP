@@ -6,6 +6,14 @@ import br.ufape.edu.item.Item;
 import br.ufape.edu.solicitacao.Solicitacao;
 import br.ufape.edu.usuarios.Usuario;
 
+/**
+ * Classe que gerencia a "persistência" dos dados do sistema Achados e Perdidos.
+ * Implementa o repositório em memória com geração automática de IDs.
+ * 
+ * @author Paulo Vinicius - Arquitetura inicial e implementação da interface
+ * @author Victor Dias - Ajuste de métodos de busca e correção na atribuição incremental de IDs.
+ */
+
 public class Repositorio implements IRepositorio {
 
 	private ArrayList<Usuario> usuarios = new ArrayList<>();
