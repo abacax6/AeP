@@ -2,6 +2,7 @@ package br.ufape.edu.sistema;
 
 import br.ufape.edu.repositorio.Repositorio;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -246,8 +247,9 @@ public class Sistema {
 	    do {
 	        System.out.println("\n===== Painel do Usuário: " + usuario.getUsername() + " =====");
 	        System.out.println("1. Solicitar Cadastro de item");
-	        System.out.println("2. Ver Minhas Solicitações");
+	        System.out.println("2. Ver Minhas Solicitações de Cadastro");
 	        System.out.println("3. Solicitar Resgate de Item");
+	        System.out.println("4. Ver Minhas Solicitações de Resgate");
 	        System.out.println("0. Sair do painel");
 	        System.out.print("Escolha uma opção: ");
 	        opcao = sc.nextInt();
@@ -258,10 +260,13 @@ public class Sistema {
 	                solicitarCadastroItem(usuario);
 	                break;
 	            case 2:
-	                visualizarSolicitacoesDoUsuario(usuario);
+	            	visualizarSolicitacoesDeCadastro(usuario);
 	                break;
 	            case 3:
 	                solicitarResgateDeItem(usuario);
+	                break;
+	            case 4:
+	            	visualizarSolicitacoesDeResgate(usuario);
 	                break;
 	            case 0:
 	                System.out.println("Saindo do painel do usuário...");
@@ -284,15 +289,29 @@ public class Sistema {
 	    for (Item item : itens) {
 	        System.out.println("ID: " + item.getId() + " | Nome: " + item.getNome() + " | Descrição: " + item.getDescricao());
 	    }
-
+		
 	    System.out.print("\nDigite o ID do item que deseja solicitar o resgate: ");
 	    int itemId = sc.nextInt();
 	    sc.nextLine(); // limpar buffer
+	    
+	    System.out.println("\n=== Solicitação de Resgate de Item ===");
+
+		System.out.print("Descrição da situação: ");
+		String descricao = sc.nextLine();
+
+		System.out.print("Caminho da Imagem Para Comprovação (opcional): ");
+		String imagem = sc.nextLine();								
+		File imgFile = new File(imagem); // Verificação se o caminho da imagem existe (não obrigatório)
+		if (!imgFile.exists()) {
+			System.out.println("Aviso: O caminho informado não corresponde a um arquivo existente ou não foi innformado. O cadastro continuará mesmo assim.");
+		}
 
 	    Item itemSelecionado = repositorio.buscarItemPorId(itemId);
 
 	    if (itemSelecionado != null) {
 	        Solicitacao solicitacao = new Solicitacao("resgate", itemSelecionado, usuario);
+	        solicitacao.setDescricaoResgate(descricao);
+	        solicitacao.setImagemComprovante(imagem);
 	        repositorio.cadastrarSolicitacao(solicitacao); // aqui o ID será atribuído automaticamente
 	        System.out.println("Solicitação enviada com sucesso. Aguarde a aprovação do administrador.");
 	    } else {
@@ -300,13 +319,27 @@ public class Sistema {
 	    }
 	}
 
-	public void visualizarSolicitacoesDoUsuario(Usuario usuario) {
-		System.out.println("\n--- Suas Solicitações ---");
+	public void visualizarSolicitacoesDeCadastro(Usuario usuario) {
+		System.out.println("\n--- Suas Solicitações de Cadastro ---");
 		ArrayList<Solicitacao> todas = repositorio.listarTodasSolicitacoes();
 		for (Solicitacao s : todas) {
-			if (s.getSolicitante().equals(usuario)) {
+			if (s.getSolicitante().equals(usuario) && s.getTipo().equalsIgnoreCase("cadastro")) {
 				System.out.println("ID: " + s.getId() + " | Tipo: " + s.getTipo() + " | Status: " + s.getStatus());
 				System.out.println("Item: " + s.getItem().getNome() + " - " + s.getItem().getDescricao());
+				
+				System.out.println("---------------");
+			}
+		}
+	}
+	
+	public void visualizarSolicitacoesDeResgate(Usuario usuario) {
+		System.out.println("\n--- Suas Solicitações de Resgate ---");
+		ArrayList<Solicitacao> todas = repositorio.listarTodasSolicitacoes();
+		for (Solicitacao s : todas) {
+			if (s.getSolicitante().equals(usuario) && s.getTipo().equalsIgnoreCase("resgate")) {
+				System.out.println("ID: " + s.getId() + " | Tipo: " + s.getTipo() + " | Status: " + s.getStatus());
+				System.out.println("Item: " + s.getItem().getNome() + " - " + s.getItem().getDescricao());
+				System.out.println("Imagem do item: " + s.getItem().getImg());
 				System.out.println("---------------");
 			}
 		}
@@ -324,8 +357,22 @@ public class Sistema {
 		System.out.print("Telefone de contato: ");
 		String telefone = sc.nextLine();
 
-		System.out.print("Caminho da imagem (pode ser um texto fictício): ");
-		String imagem = sc.nextLine();
+		String imagem = "";
+		boolean imagemValida = false;
+
+		while (!imagemValida) {
+			System.out.println("Digite o caminho ou nome da imagem do item (obrigatório):");
+			imagem = sc.nextLine();
+
+			File imgFile = new File(imagem);
+			if (imagem.trim().isEmpty()) {
+				System.out.println("A imagem é obrigatória. Por favor, insira um caminho válido.");
+			} else if (!imgFile.exists() || imgFile.isDirectory()) {
+				System.out.println(" O arquivo informado não existe ou não é uma imagem válida.");
+			} else {
+				imagemValida = true;
+			}
+		}
 
 		Item item = new Item(nome, descricao, telefone, imagem);
 		
