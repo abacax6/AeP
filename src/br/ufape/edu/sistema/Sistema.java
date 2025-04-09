@@ -17,14 +17,58 @@ public class Sistema {
 
 	// Scanner do sistema
 	Scanner sc = new Scanner(System.in);
+	
 	// O Sistema possui um repositório
 	private Repositorio repositorio = new Repositorio();
+	
 	// O Sistema possui um admin
 	private Administrador admin = new Administrador(0, "admin", "admin123", "admin@ufape.edu.br", "(87) 9 0000-0000",
 			repositorio);
+	
+	/* INICIAR O SISTEMA */
+	// Método que chama "o menu iniciar"
+	public void iniciar() {
+		repositorio.listarItensAnunciados();
+		int opcao;
+		do {
+			System.out.println("\n===== Achados & Perdidos UFAPE =====");
+			System.out.println("1. Login");
+			System.out.println("2. Cadastro");
+			System.out.println("0. Sair");
+			System.out.print("Escolha uma opção: ");
+			opcao = sc.nextInt();
+			sc.nextLine(); // limpa o buffer
+
+			switch (opcao) {
+			case 1:
+				login();
+				break;
+			case 2:
+				cadastroUsuario();				
+				break;
+			case 0:
+				System.out.println("Encerrando...");
+				break;
+			default:
+				System.out.println("Opção inválida.");
+			}
+
+		} while (opcao != 0);
+
+		sc.close();
+	}
 
 	/* LOGIN */
-	public Usuario login(String username, String senha) {
+	public void login() {
+		System.out.println("Insira o username: ");
+		String username = sc.next();
+		System.out.println("Insira a senha: ");
+		String senha = sc.next();
+		autenticarLogin(username, senha);
+	}
+	
+	// Autenticação de login
+	public Usuario autenticarLogin(String username, String senha) {
 		Usuario usuario = repositorio.buscarUsuarioPorUsername(username);
 		// LOGIN ADM
 		if (username.equals(admin.getUsername()) && senha.equals(admin.getSenha())) { // Se as credenciais forem as do
@@ -50,51 +94,122 @@ public class Sistema {
 	}
 		
 	/* CADASTRO */
-	public void cadastro() {
-		String username = sc.nextLine();
-		String senha = sc.nextLine();
-		String email = sc.nextLine();
-		String telefone = sc.nextLine();
-		Usuario usuario = new Usuario(username, senha, email, telefone);
-		repositorio.cadastrarUsuario(usuario);
-	}
 	
-	
-	/* INICIAR O SISTEMA */
-	public void iniciar() {
-		repositorio.listarItensAnunciados();
-		int opcao;
-		do {
-			System.out.println("\n===== Achados & Perdidos UFAPE =====");
-			System.out.println("1. Login");
-			System.out.println("2. Cadastro");
-			System.out.println("0. Sair");
-			System.out.print("Escolha uma opção: ");
-			opcao = sc.nextInt();
-			sc.nextLine(); // limpa o buffer
-
-			switch (opcao) {
-			case 1:
-				String username = sc.next();
-				String senha = sc.next();
-				login(username, senha);
+	// Inputs e criação do usuário
+	public void cadastroUsuario() {
+		System.out.println("\n===== Cadastrar novo Usuario =====");
+		String u;
+		String s;
+		String e;
+		String t;
+		// username
+		while(true) {
+			System.out.println("Insira o username: ");
+			String username = sc.nextLine();
+			if(validarUsername(username)) {
+				u = username;
 				break;
-			case 2:
-				cadastro();				
-				break;
-			case 0:
-				System.out.println("Encerrando...");
-				break;
-			default:
-				System.out.println("Opção inválida.");
 			}
+		}
 
-		} while (opcao != 0);
+		// senha
+		while(true) {
+			System.out.println("Insira uma senha: ");
+			String senha = sc.nextLine();
+			if(validarSenha(senha)) {
+				s = senha;
+				break;
+			}
+		}
 
-		sc.close();
+		// email
+		while(true) {
+			System.out.println("Insira um e-mail válido: ");
+			String email = sc.nextLine();
+			if(validarEmail(email)) {
+				e = email;
+				break;
+			}
+		}
+		
+		//telefone
+		while(true) {
+			System.out.println("Insira um número de telefone: ");
+			String telefone = sc.nextLine();
+			if(validarTelefone(telefone)) {
+				t = telefone;
+				break;
+			}
+		}
+		validarCadastroUsuario(u, s, e, t);
+	}
+	
+	// Verificação e formatação correta dos dados de cadastro de usuario
+	public void validarCadastroUsuario(String username, String senha, String email, String telefone) {
+        Usuario usuario = new Usuario(username, senha, email, telefone);
+        repositorio.cadastrarUsuario(usuario);
+    }
+	
+	public boolean validarUsername(String username) {
+		// Validação do username
+        if (username == null || !username.matches("^[a-zA-Z0-9]{3,12}$")) {
+            System.out.println("Username inválido! Deve conter apenas letras e números (3-12 caracteres)");
+            return false;
+        }
+        return true;
+	}
+	
+	public boolean validarSenha(String senha) {
+		// Validação da senha
+        if (senha == null || !senha.matches("^[a-zA-Z0-9]{4,8}$")) {
+            System.out.println("Senha inválida! Deve conter apenas letras e números (4-8 caracteres)");
+            return false;
+        }
+        return true;
 	}
 
+	public boolean validarEmail(String email) {
+		// Validação do email
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            System.out.println("Email inválido!.");
+            return false;
+        }
+        return true;
+	}
+	
+	public boolean validarTelefone(String telefone) {
+		// Formatação do telefone
+		if (telefone != null) {
+            String apenasNumeros = telefone.replaceAll("[^0-9]", "");
+            
+            if (apenasNumeros.length() < 10) { // Mínimo 10 dígitos (DDD + número)
+                System.out.println("Telefone inválido! Deve conter DDD + número (mínimo 10 dígitos)");
+                return false;
+            }
+            
+            // Formatação automática
+            String telefoneFormatado;
+            if (apenasNumeros.length() == 10) { // Ex: 1198765432 → (11) 9876-5432
+                telefoneFormatado = String.format("(%s) %s-%s",
+                    apenasNumeros.substring(0, 2),
+                    apenasNumeros.substring(2, 6),
+                    apenasNumeros.substring(6));
+            } else { // 11 dígitos (Ex: 11987654321) → (11) 98765-4321
+                telefoneFormatado = String.format("(%s) %s-%s",
+                    apenasNumeros.substring(0, 2),
+                    apenasNumeros.substring(2, 7),
+                    apenasNumeros.substring(7));
+            }
+            
+            // System.out.println("Telefone formatado: " + telefoneFormatado);
+            return true;
+        }
+        System.out.println("Telefone inválido! Insira um número de telefone válido");
+        return false;
+	}
+	
 	/* PAINEL ADMIN */
+	// Método que chama o menu "Painel Admin"
 	public void exibirPainelAdmin() {
 	    int opcao;
 	    do {
@@ -109,13 +224,13 @@ public class Sistema {
 
 	        switch (opcao) {
 	            case 1:
-	                admin.visualizarSolicitacoesPendentes();
+	                admin.verListaSolicitacoesPendentes();
 	                break;
 	            case 2:
-	                // listarSolicitacoesPorStatus("Aprovada");
+	            	admin.verListaSolicitacoesAprovadas();
 	                break;
 	            case 3:
-	                // listarSolicitacoesPorStatus("Descartada");
+	            	admin.verListaSolicitacoesRejeitadas();
 	                break;
 	            case 0:
 	                System.out.println("Saindo do painel do administrador...");

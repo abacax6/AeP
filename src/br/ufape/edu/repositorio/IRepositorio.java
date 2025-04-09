@@ -23,6 +23,8 @@ public interface IRepositorio {
 	void cadastrarSolicitacao(Solicitacao solicitacao);
 	Solicitacao buscarSolicitacaoPorId(int id);
 	ArrayList<Solicitacao> listarSolicitacoesPendentes();
+	ArrayList<Solicitacao> listarSolicitacoesAprovadas();
+	ArrayList<Solicitacao> listarSolicitacoesRejeitadas();
 	ArrayList<Solicitacao> listarTodasSolicitacoes();
 
 }
