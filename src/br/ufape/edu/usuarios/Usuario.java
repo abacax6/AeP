@@ -6,33 +6,33 @@ import br.ufape.edu.solicitacao.Solicitacao;
 public class Usuario {
 	// ATRIBUTOS
 	private int id;
-	private String nome;
+	private String username;
 	private String senha;
-	private String contato;
+	private String email;
+	private String telefone;
 	private ArrayList<Solicitacao> solicitacoes;
 	
-	
 	// CONSTRUTOR
-	public Usuario(int id, String nome, String senha, String contato, ArrayList<Solicitacao> solicitacoes) {
-		this.id = id;
-		this.nome = nome;
+	public Usuario(String username, String senha, String email, String telefone) {
+		super();
+		this.username = username;
 		this.senha = senha;
-		this.contato = contato;
-		this.solicitacoes = solicitacoes;
+		this.email = email;
+		this.telefone = telefone;
 	}
 	
-	// GETTERS E SETTERS
+	// GETTERS e SETTERS
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getNome() {
-		return nome;
+	public String getUsername() {
+		return username;
 	}
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getSenha() {
 		return senha;
@@ -40,11 +40,17 @@ public class Usuario {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	public String getContato() {
-		return contato;
+	public String getEmail() {
+		return email;
 	}
-	public void setContato(String contato) {
-		this.contato = contato;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getTelefone() {
+		return telefone;
+	}
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 	public ArrayList<Solicitacao> getSolicitacoes() {
 		return solicitacoes;
@@ -52,5 +58,6 @@ public class Usuario {
 	public void setSolicitacoes(ArrayList<Solicitacao> solicitacoes) {
 		this.solicitacoes = solicitacoes;
 	}
+		
 	
 }

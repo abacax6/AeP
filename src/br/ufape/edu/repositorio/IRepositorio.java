@@ -9,6 +9,7 @@ import br.ufape.edu.usuarios.Usuario;
 public interface IRepositorio {
 
 	void cadastrarUsuario(Usuario usuario);
+	Usuario buscarUsuarioPorUsername(String username);
 	Usuario buscarUsuarioPorEmail(String email);
 	ArrayList<Usuario> listarUsuarios();
 
@@ -20,8 +21,7 @@ public interface IRepositorio {
 	
 
 	void cadastrarSolicitacao(Solicitacao solicitacao);
-	void aprovarSolicitacao(Solicitacao solicitacao);
-	void descartarSolicitacao(Solicitacao solicitacao);
+	Solicitacao buscarSolicitacaoPorId(int id);
 	ArrayList<Solicitacao> listarSolicitacoesPendentes();
 	ArrayList<Solicitacao> listarTodasSolicitacoes();
 

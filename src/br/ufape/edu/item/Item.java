@@ -1,23 +1,27 @@
 package br.ufape.edu.item;
 
-public class Item{
+public class Item {
 
 	private String nome;
 	private String descricao;
-	private String contato; 
+	private String contato;
 	private String img;
+	private String status; // "Anunciado" "Resgatado" "Aguardando" "null"-> quando a solicitacao foi descartada 
+							// DIFERENTE DE STATUS DA SOLICITACAO -> "Pendente" "Descartada" "Aprovada"
 	private int id;
+
 	
-	
-	public Item(String nome, String descricao, String contato, String img, int id) {
-		
+	// CONSTRUTOR
+	public Item(String nome, String descricao, String contato, String img) {
+
 		this.nome = nome;
 		this.descricao = descricao;
 		this.contato = contato;
 		this.img = img;
-		this.id = id;
+		this.status = "Aguardando";
 	}
 
+	// GETTERS e SETTERS
 	public String getNome() {
 		return nome;
 	}
@@ -50,11 +54,10 @@ public class Item{
 		this.img = img;
 	}
 
-	
 	@Override
-    public String toString() {
-        return id + ";" + nome + ";" + descricao + ";" + contato + ";" + img;
-    }
+	public String toString() {
+		return id + ";" + nome + ";" + descricao + ";" + contato + ";" + img;
+	}
 
 	public int getId() {
 		return id;
@@ -63,10 +66,11 @@ public class Item{
 	public void setId(int id) {
 		this.id = id;
 	}
+	public String getStatus() {
+		return status;
+	}
 
-	
-
-	
-	
-
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

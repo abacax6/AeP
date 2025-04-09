@@ -11,8 +11,7 @@ public class Solicitacao {
 	private Usuario solicitante; // usuario criou a solicitação
 	
 	// CONSTRUTOR
-	public Solicitacao(int id, String tipo, Item item, Usuario usuario) {
-		setId(id);
+	public Solicitacao(String tipo, Item item, Usuario usuario) {	
 		setTipo(tipo);
 		setItem(item);
 		setSolicitante(usuario);

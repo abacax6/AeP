@@ -1,0 +1,190 @@
+package br.ufape.edu.sistema;
+
+import br.ufape.edu.repositorio.Repositorio;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import br.ufape.edu.item.Item;
+import br.ufape.edu.usuarios.Administrador;
+import br.ufape.edu.usuarios.Usuario;
+import br.ufape.edu.solicitacao.*;
+
+public class Sistema {
+
+	/* ATRIBUTOS DO SISTEMA */
+
+	// Scanner do sistema
+	Scanner sc = new Scanner(System.in);
+	// O Sistema possui um repositório
+	private Repositorio repositorio = new Repositorio();
+	// O Sistema possui um admin
+	private Administrador admin = new Administrador(0, "admin", "admin123", "admin@ufape.edu.br", "(87) 9 0000-0000",
+			repositorio);
+
+	/* LOGIN */
+	public Usuario login(String username, String senha) {
+		Usuario usuario = repositorio.buscarUsuarioPorUsername(username);
+		// LOGIN ADM
+		if (username.equals(admin.getUsername()) && senha.equals(admin.getSenha())) { // Se as credenciais forem as do
+																						// admin
+			System.out.println("Logado como administrador.");
+			exibirPainelAdmin();
+			return admin;
+		}
+		// LOGIN USUARIO
+		else if (usuario == null) { // Se não houver um usuario com esse nome
+			System.out.println("Usuario inexistente!");
+			return null;
+		} else if (senha.equals(usuario.getSenha())) { // Se o usuário existe, e a senha for a correta
+			System.out.println("Logado como usuário " + usuario.getUsername() + ".");
+			exibirPainelUsuario(usuario);
+			return usuario;
+		} else if (!senha.equals(usuario.getSenha())) { // Se o usuário existe, e a senha não for a correta
+			System.out.println("Senha incorreta! Tente novamente.");
+			return null;
+		}
+
+		return null; // Se chegar até aqui, é porque houve algum erro desconhecido, caso de exception
+	}
+		
+	/* CADASTRO */
+	public void cadastro() {
+		String username = sc.nextLine();
+		String senha = sc.nextLine();
+		String email = sc.nextLine();
+		String telefone = sc.nextLine();
+		Usuario usuario = new Usuario(username, senha, email, telefone);
+		repositorio.cadastrarUsuario(usuario);
+	}
+	
+	
+	/* INICIAR O SISTEMA */
+	public void iniciar() {
+		repositorio.listarItensAnunciados();
+		int opcao;
+		do {
+			System.out.println("\n===== Achados & Perdidos UFAPE =====");
+			System.out.println("1. Login");
+			System.out.println("2. Cadastro");
+			System.out.println("0. Sair");
+			System.out.print("Escolha uma opção: ");
+			opcao = sc.nextInt();
+			sc.nextLine(); // limpa o buffer
+
+			switch (opcao) {
+			case 1:
+				String username = sc.next();
+				String senha = sc.next();
+				login(username, senha);
+				break;
+			case 2:
+				cadastro();				
+				break;
+			case 0:
+				System.out.println("Encerrando...");
+				break;
+			default:
+				System.out.println("Opção inválida.");
+			}
+
+		} while (opcao != 0);
+
+		sc.close();
+	}
+
+	/* PAINEL ADMIN */
+	public void exibirPainelAdmin() {
+	    int opcao;
+	    do {
+	        System.out.println("\n===== Painel do Administrador =====");
+	        System.out.println("1. Ver solicitações pendentes");
+	        System.out.println("2. Ver solicitações aprovadas");
+	        System.out.println("3. Ver solicitações rejeitadas");
+	        System.out.println("0. Sair do painel");
+	        System.out.print("Escolha uma opção: ");
+	        opcao = sc.nextInt();
+	        sc.nextLine(); // limpa buffer
+
+	        switch (opcao) {
+	            case 1:
+	                admin.visualizarSolicitacoesPendentes();
+	                break;
+	            case 2:
+	                // listarSolicitacoesPorStatus("Aprovada");
+	                break;
+	            case 3:
+	                // listarSolicitacoesPorStatus("Descartada");
+	                break;
+	            case 0:
+	                System.out.println("Saindo do painel do administrador...");
+	                break;
+	            default:
+	                System.out.println("Opção inválida.");
+	        }
+	    } while (opcao != 0);
+	}
+
+	/* PAINEL USUARIO */
+	public void exibirPainelUsuario(Usuario usuario) {
+		int opcao;
+		do {
+			System.out.println("\n===== Painel do Usuário: " + usuario.getUsername() + " =====");
+			System.out.println("1. Solicitar Cadastro de item");
+			System.out.println("2. Ver Minhas Solicitações");
+			System.out.println("0. Sair do painel");
+			System.out.print("Escolha uma opção: ");
+			opcao = sc.nextInt();
+			sc.nextLine(); // limpar buffer
+
+			switch (opcao) {
+			case 1:
+				solicitarCadastroItem(usuario);
+				break;
+			case 2:
+				visualizarSolicitacoesDoUsuario(usuario);
+				break;
+			case 0:
+				System.out.println("Saindo do painel do usuário...");
+				break;
+			default:
+				System.out.println("Opção inválida.");
+			}
+		} while (opcao != 0);
+	}
+
+	public void visualizarSolicitacoesDoUsuario(Usuario usuario) {
+		System.out.println("\n--- Suas Solicitações ---");
+		ArrayList<Solicitacao> todas = repositorio.listarTodasSolicitacoes();
+		for (Solicitacao s : todas) {
+			if (s.getSolicitante().equals(usuario)) {
+				System.out.println("ID: " + s.getId() + " | Tipo: " + s.getTipo() + " | Status: " + s.getStatus());
+				System.out.println("Item: " + s.getItem().getNome() + " - " + s.getItem().getDescricao());
+				System.out.println("---------------");
+			}
+		}
+	}
+
+	public void solicitarCadastroItem(Usuario usuario) {
+		System.out.println("\n=== Solicitação de Cadastro de Item ===");
+
+		System.out.print("Nome do item: ");
+		String nome = sc.nextLine();
+
+		System.out.print("Descrição do item: ");
+		String descricao = sc.nextLine();
+
+		System.out.print("Telefone de contato: ");
+		String telefone = sc.nextLine();
+
+		System.out.print("Caminho da imagem (pode ser um texto fictício): ");
+		String imagem = sc.nextLine();
+
+		Item item = new Item(nome, descricao, telefone, imagem);
+		
+		Solicitacao solicitacao = new Solicitacao("Cadastro", item, usuario);
+
+		repositorio.cadastrarSolicitacao(solicitacao);
+		System.out.println("Solicitação enviada com sucesso! Aguarde a aprovação do administrador.");
+	}
+}
