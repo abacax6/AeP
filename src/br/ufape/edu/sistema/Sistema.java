@@ -8,7 +8,6 @@ import java.util.Scanner;
 import br.ufape.edu.item.Item;
 import br.ufape.edu.usuarios.Administrador;
 import br.ufape.edu.usuarios.Usuario;
-import br.ufape.edu.solicitacao.*;
 
 public class Sistema {
 	/**
@@ -338,6 +337,27 @@ public class Sistema {
 				System.out.println("Opção inválida.");
 			}
 		} while (opcao != 0);
+	        System.out.println("0. Sair do painel");
+	        System.out.print("Escolha uma opção: ");
+	        opcao = sc.nextInt();
+	        sc.nextLine(); // limpar buffer
+
+	        switch (opcao) {
+	            case 1:
+	                break;
+	            case 2:
+	            	visualizarSolicitacoesDeCadastro(usuario);
+	                break;
+	            case 3:
+	                solicitarResgateDeItem(usuario);
+	                break;
+	                break;
+	            case 0:
+	                System.out.println("Saindo do painel do usuário...");
+	                break;
+	            default:
+	                System.out.println("Opção inválida.");
+	        }
 	}
 
 	/**
@@ -358,10 +378,19 @@ public class Sistema {
 			System.out.println(
 					"ID: " + item.getId() + " | Nome: " + item.getNome() + " | Descrição: " + item.getDescricao());
 		}
+	    System.out.println("\nItens Disponíveis para Resgate");
+	    for (Item item : itens) {
+	    	System.out.println("ID: " + item.getId() + " | Nome: " + item.getNome() + " | Descrição: " + item.getDescricao() + " | Imagem: " + item.getImg());
+		
+	    System.out.print("\nDigite o ID do item que deseja solicitar o resgate: ");
+	    int itemId = sc.nextInt();
+	    sc.nextLine(); // limpar buffer
+	    
+	    System.out.println("\n=== Solicitação de Resgate de Item ===");
+
 
 		System.out.print("\nDigite o ID do item que deseja solicitar o resgate: ");
-		int itemId = sc.nextInt();
-		sc.nextLine(); // limpar buffer
+		System.out.print("Caminho da Imagem Para Comprovação (opcional): ");
 
 		Item itemSelecionado = repositorio.buscarItemPorId(itemId);
 
@@ -372,20 +401,27 @@ public class Sistema {
 		} else {
 			System.out.println("Item com o ID informado não foi encontrado.");
 		}
+	        Solicitacao solicitacao = new Solicitacao("resgate", itemSelecionado, usuario);
+	        solicitacao.setDescricaoResgate(descricao);
+	    } else {
+	        System.out.println("Item com o ID informado não foi encontrado.");
 	}
 
-	/**
-	 * Exibe todas as solicitações associadas ao usuário logado.
-	 * 
-	 * @param usuario Usuário cujas solicitações serão listadas
-	 */
-	public void visualizarSolicitacoesDoUsuario(Usuario usuario) {
-		System.out.println("\n--- Suas Solicitações ---");
+	public void visualizarSolicitacoesDeCadastro(Usuario usuario) {
+		System.out.println("\n--- Suas Solicitações de Cadastro ---");
 		ArrayList<Solicitacao> todas = repositorio.listarTodasSolicitacoes();
 		for (Solicitacao s : todas) {
 			if (s.getSolicitante().equals(usuario)) {
 				System.out.println("ID: " + s.getId() + " | Tipo: " + s.getTipo() + " | Status: " + s.getStatus());
 				System.out.println("Item: " + s.getItem().getNome() + " - " + s.getItem().getDescricao());
+	public void visualizarSolicitacoesDeResgate(Usuario usuario) {
+		System.out.println("\n--- Suas Solicitações de Resgate ---");
+		ArrayList<Solicitacao> todas = repositorio.listarTodasSolicitacoes();
+		for (Solicitacao s : todas) {
+			if (s.getSolicitante().equals(usuario) && s.getTipo().equalsIgnoreCase("resgate")) {
+				System.out.println("ID: " + s.getId() + " | Tipo: " + s.getTipo() + " | Status: " + s.getStatus());
+				System.out.println("Item: " + s.getItem().getNome() + " - " + s.getItem().getDescricao());
+				System.out.println("Imagem do item: " + s.getItem().getImg());
 				System.out.println("---------------");
 			}
 		}
@@ -408,8 +444,22 @@ public class Sistema {
 		System.out.print("Telefone de contato: ");
 		String telefone = sc.nextLine();
 
-		System.out.print("Caminho da imagem (pode ser um texto fictício): ");
-		String imagem = sc.nextLine();
+		String imagem = "";
+		boolean imagemValida = false;
+
+		while (!imagemValida) {
+			System.out.println("Digite o caminho ou nome da imagem do item (obrigatório):");
+			imagem = sc.nextLine();
+
+			File imgFile = new File(imagem);
+			if (imagem.trim().isEmpty()) {
+				System.out.println("A imagem é obrigatória. Por favor, insira um caminho válido.");
+			} else if (!imgFile.exists() || imgFile.isDirectory()) {
+				System.out.println(" O arquivo informado não existe ou não é uma imagem válida.");
+			} else {
+				imagemValida = true;
+			}
+		}
 
 		Item item = new Item(nome, descricao, telefone, imagem);
 

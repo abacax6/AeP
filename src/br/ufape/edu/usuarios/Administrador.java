@@ -90,6 +90,25 @@ public class Administrador extends Usuario {
 			System.out.println("Item: " + s.getItem().getNome());
 			System.out.println("ItemID: " + s.getItem().getId());
 			System.out.println("Descrição: " + s.getItem().getDescricao());
+			if (s.getTipo().equalsIgnoreCase("Cadastro")) {
+				if (s.getItem().getImg() != null && !s.getItem().getImg().isEmpty()) { // Imagem do item (caso tenha sido incluída)
+					System.out.println("Imagem do item: " + s.getItem().getImg());
+				} else {
+					System.out.println("Imagem do item: Não informada.");
+				}
+			} else if (s.getTipo().equalsIgnoreCase("Resgate")) { 
+				if (s.getImagemComprovante() != null && !s.getImagemComprovante().isEmpty()) {// Imagem do comprovante (se tiver)
+					System.out.println("Comprovante de resgate: " + s.getImagemComprovante());
+				} else {
+					System.out.println("Comprovante de resgate: Não enviado.");
+				}
+
+				if (s.getDescricaoResgate() != null && !s.getDescricaoResgate().isEmpty()) { // Descrição da situação do resgate
+					System.out.println("Descrição da situação: " + s.getDescricaoResgate());
+				} else {
+					System.out.println("Descrição da situação: Não informada.");
+				}
+			}
 			System.out.print("=== ================== ===\n");
 			
 		}
@@ -198,6 +217,8 @@ public class Administrador extends Usuario {
 			solicitacao.setStatus("Aprovada");
 			solicitacao.getItem().setStatus("Anunciado"); // STATUS DO ITEM, AO SER APROVADO = "ANUNCIADO"
 			repositorio.cadastrarItem(solicitacao.getItem());
+
+
 			System.out.println("\nSolicitação de cadastro do item de id " + solicitacao.getItem().getId() + " aprovada com sucesso.");
 			return;
 		} else {
